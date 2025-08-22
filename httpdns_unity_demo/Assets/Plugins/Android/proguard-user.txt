@@ -1,0 +1,84 @@
+# ProGuard Rules for Alibaba Cloud HTTP DNS SDK 2.6.5
+# Unity 2022 with Modern Gradle Configuration
+# 参考旧版配置补充完整的混淆保护规则
+
+# ===== HTTP DNS SDK Protection =====
+-keep class com.alibaba.sdk.android.httpdns.** { *; }
+-keep interface com.alibaba.sdk.android.httpdns.** { *; }
+-keep enum com.alibaba.sdk.android.httpdns.** { *; }
+
+# HTTP DNS SDK Dependencies（SDK依赖组件）
+-keep class com.alibaba.sdk.android.logger.** { *; }
+-keep class com.alibaba.sdk.android.crashdefend.** { *; }
+-keep class com.alibaba.sdk.android.ipdetector.** { *; }
+-keep class org.apache.commons.codec.** { *; }
+
+# ===== Unity Protection =====
+-keep class com.unity3d.** { *; }
+-keep class unity.** { *; }
+-keep class unityengine.** { *; }
+-keep class org.fmod.** { *; }
+
+# Unity Player Classes
+-keep class com.unity3d.player.** { *; }
+
+# ===== AndroidX Support =====
+-keep class androidx.** { *; }
+-dontwarn androidx.**
+
+# ===== Networking Classes =====
+-keep class java.net.** { *; }
+-keep class javax.net.** { *; }
+-keep class android.net.** { *; }
+-keep class okhttp3.** { *; }
+
+# ===== JNI and Reflection =====
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+# Constructors（构造函数保护）
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+# ===== Attributes =====
+-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
+-keepattributes SourceFile
+-keepattributes LineNumberTable
+
+# ===== Serialization =====
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# ===== Suppress Warnings =====
+-dontwarn com.alibaba.sdk.android.httpdns.**
+-dontwarn com.alibaba.sdk.android.logger.**
+-dontwarn com.alibaba.sdk.android.crashdefend.**
+-dontwarn com.alibaba.sdk.android.ipdetector.**
+-dontwarn org.apache.commons.codec.**
+-dontwarn javax.annotation.**
+-dontwarn javax.inject.**
+-dontwarn okhttp3.**
+
+# ===== General Android Components =====
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider

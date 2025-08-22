@@ -1,0 +1,16 @@
+plugins {
+    // If you are changing the Android Gradle Plugin version, make sure it is compatible with the Gradle version preinstalled with Unity
+    // See which Gradle version is preinstalled with Unity here https://docs.unity3d.com/Manual/android-gradle-overview.html
+    // See official Gradle and Android Gradle Plugin compatibility table here https://developer.android.com/studio/releases/gradle-plugin#updating-gradle
+    // To specify a custom Gradle version in Unity, go do "Preferences > External Tools", uncheck "Gradle Installed with Unity (recommended)" and specify a path to a custom Gradle version
+    id 'com.android.application' version '7.4.2' apply false
+    id 'com.android.library' version '7.4.2' apply false
+    **BUILD_SCRIPT_DEPS**
+}
+
+// 注意：仓库配置已移动到settingsTemplate.gradle中，因为Unity使用PREFER_SETTINGS模式
+// 采用old文件夹的多层阿里云仓库策略，但保持AGP 7.4.2和Maven依赖
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
