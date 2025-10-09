@@ -1,0 +1,12 @@
+{
+    "name": "com.aliyun.emas",
+    "displayName": "alicloud-apm",
+    "version": "1.0.0",
+    "unity": "2022.3",
+    "description": "Alibaba Cloud EMAS APM for Unity",
+    "author": {
+        "name": "xieduo",
+        "email": "xieduo.lg@alibaba-inc.com",
+        "url": "https://aliyun.com"
+    }
+}

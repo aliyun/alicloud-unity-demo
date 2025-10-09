@@ -1,0 +1,22 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.3 effective-5.10 (swiftlang-6.0.3.1.10 clang-1600.0.30.1)
+// swift-module-flags: -target arm64-apple-ios10.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name AlicloudApmCore
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+@_exported import AlicloudApmCore
+import Foundation
+import Swift
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_hasMissingDesignatedInitializers @objc public class PropertyIntrospection : ObjectiveC.NSObject {
+  @objc final public let name: Swift.String
+  @objc final public let offset: Swift.Int
+  @objc final public let isStrong: Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class SwiftIntrospector : ObjectiveC.NSObject {
+  @objc public class func getPropertiesRecursive(object: Any) -> [AlicloudApmCore.PropertyIntrospection]
+  @objc public class func getPropertyValue(object: Any, name: Swift.String) -> Any?
+  @objc override dynamic public init()
+  @objc deinit
+}
