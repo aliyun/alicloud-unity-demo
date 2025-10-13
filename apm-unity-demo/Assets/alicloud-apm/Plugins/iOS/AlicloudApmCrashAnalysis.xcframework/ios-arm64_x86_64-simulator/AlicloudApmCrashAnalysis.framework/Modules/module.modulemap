@@ -1,6 +1,0 @@
-framework module AlicloudApmCrashAnalysis {
-  umbrella header "AlicloudApmCrashAnalysis-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -1,6 +1,0 @@
-framework module AlicloudApmCBridge {
-  umbrella header "AlicloudApmCBridge-umbrella.h"
-
-  export *
-  module * { export * }
-}
