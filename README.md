@@ -29,5 +29,6 @@ HTTPDNS使用HTTP协议进行域名解析，代替现有基于UDP的DNS协议，
 
 阿里云应用性能监控（APM）为移动端应用提供稳定性观测能力，覆盖崩溃分析、异常监控等关键场景。`apm-unity-demo` 展示了在 Unity 项目中接入 APM SDK 的基础流程，包含初始化、配置与数据上报验证示例，帮助您验证监控链路是否工作正常。
 
-- Demo对应目录：[apm-unity-demo](./apm-unity-demo)
+- Demo 对应目录：[apm-unity-demo](./apm-unity-demo)
+- SDK 接入官方文档：[Unity SDK 接入](https://help.aliyun.com/document_detail/2984188.html)
 - [产品官网](https://www.aliyun.com/product/emascrash/apm)

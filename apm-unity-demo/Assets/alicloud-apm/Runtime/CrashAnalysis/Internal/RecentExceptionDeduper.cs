@@ -10,13 +10,10 @@ namespace Alicloud.Apm.CrashAnalysis
     /// </summary>
     internal static class RecentExceptionDeduper
     {
-        private static readonly Dictionary<string, double> _recent =
-            new Dictionary<string, double>();
-        private static readonly Queue<(string key, double ts)> _order =
-            new Queue<(string, double)>();
-        private static readonly Dictionary<string, FrequencyWindow> _frequency =
-            new Dictionary<string, FrequencyWindow>();
-        private static readonly object _lock = new object();
+        private static readonly Dictionary<string, double> _recent = new();
+        private static readonly Queue<(string key, double ts)> _order = new();
+        private static readonly Dictionary<string, FrequencyWindow> _frequency = new();
+        private static readonly object _lock = new();
         private const double TtlSeconds = 1.0; // time window to treat duplicates as the same
         private const int MaxEntries = 1024; // hard cap to prevent unbounded growth
         private const int SignatureFrameDepth = 4; // 超过4帧之后，Application.logMessageReceivedThreaded捕获的堆栈会自带Unity RegisterUECatcher 桥接帧，如"UnityEngine.<>c:<RegisterUECatcher>b__0_0|UnhandledExceptionHandler.bindings.cs|46"

@@ -34,8 +34,10 @@ namespace Alicloud.Apm
 
             try
             {
-                AndroidJavaClass apmClass = new AndroidJavaClass(APM);
-                apmClass.CallStatic("setCustomKey", key, value.ToString());
+                using (AndroidJavaClass apmClass = new AndroidJavaClass(APM))
+                {
+                    apmClass.CallStatic("setCustomKey", key, value.ToString());
+                }
             }
             catch
             {
@@ -47,8 +49,10 @@ namespace Alicloud.Apm
         {
             try
             {
-                AndroidJavaClass apmClass = new AndroidJavaClass(APM);
-                apmClass.CallStatic("setUserId", userId);
+                using (AndroidJavaClass apmClass = new AndroidJavaClass(APM))
+                {
+                    apmClass.CallStatic("setUserId", userId);
+                }
             }
             catch
             {
@@ -60,8 +64,10 @@ namespace Alicloud.Apm
         {
             try
             {
-                AndroidJavaClass apmClass = new AndroidJavaClass(APM);
-                apmClass.CallStatic("setUserNick", userNick);
+                using (AndroidJavaClass apmClass = new AndroidJavaClass(APM))
+                {
+                    apmClass.CallStatic("setUserNick", userNick);
+                }
             }
             catch
             {
@@ -73,63 +79,73 @@ namespace Alicloud.Apm
         {
             try
             {
-                AndroidJavaClass apmClass = new AndroidJavaClass(APM);
-
-                AndroidJavaObject optionsBuilder = new AndroidJavaObject(APM_OPTIONS_BUILDER);
-                optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                    "setAppKey",
-                    options.AppKey
-                );
-                optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                    "setAppSecret",
-                    options.AppSecret
-                );
-                optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                    "setAppRsaSecret",
-                    options.AppRsaSecret
-                );
-                optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                    "setChannel",
-                    options.Channel
-                );
-                optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                    "setUserId",
-                    options.UserId
-                );
-                optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                    "setUserNick",
-                    options.UserNick
-                );
-
-                if (options.SdkComponents.HasFlag(SDKComponents.CrashAnalysis))
+                using (AndroidJavaClass apmClass = new AndroidJavaClass(APM))
                 {
-                    AndroidJavaClass crashAnalysisComponent = new AndroidJavaClass(
-                        APM_CRASH_ANALYSIS_COMPONENT
-                    );
-                    optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                        "addComponent",
-                        crashAnalysisComponent
-                    );
+                    using (AndroidJavaObject optionsBuilder = new AndroidJavaObject(APM_OPTIONS_BUILDER))
+                    {
+                        optionsBuilder.Call<AndroidJavaObject>("setAppKey", options.AppKey);
+                        optionsBuilder.Call<AndroidJavaObject>("setAppSecret", options.AppSecret);
+                        optionsBuilder.Call<AndroidJavaObject>(
+                            "setAppRsaSecret",
+                            options.AppRsaSecret
+                        );
+                        optionsBuilder.Call<AndroidJavaObject>("setChannel", options.Channel);
+                        optionsBuilder.Call<AndroidJavaObject>("setUserId", options.UserId);
+                        optionsBuilder.Call<AndroidJavaObject>("setUserNick", options.UserNick);
+
+                        if (options.SdkComponents.HasFlag(SDKComponents.CrashAnalysis))
+                        {
+                            using (
+                                AndroidJavaClass crashAnalysisComponent = new AndroidJavaClass(
+                                    APM_CRASH_ANALYSIS_COMPONENT
+                                )
+                            )
+                            {
+                                optionsBuilder.Call<AndroidJavaObject>(
+                                    "addComponent",
+                                    crashAnalysisComponent
+                                );
+                            }
+                        }
+
+                        using (
+                            AndroidJavaClass unityPlayer = new AndroidJavaClass(
+                                "com.unity3d.player.UnityPlayer"
+                            )
+                        )
+                        {
+                            using (
+                                AndroidJavaObject currentActivity = unityPlayer.GetStatic<
+                                    AndroidJavaObject
+                                >("currentActivity")
+                            )
+                            {
+                                using (
+                                    AndroidJavaObject applicationContext = currentActivity.Call<
+                                        AndroidJavaObject
+                                    >("getApplicationContext")
+                                )
+                                {
+                                    optionsBuilder.Call<AndroidJavaObject>(
+                                        "setApplication",
+                                        applicationContext
+                                    );
+                                }
+                            }
+                        }
+
+                        using (
+                            AndroidJavaObject androidOptions = optionsBuilder.Call<AndroidJavaObject>(
+                                "build"
+                            )
+                        )
+                        {
+                            apmClass.CallStatic("preStart", androidOptions);
+                        }
+                    }
+
+                    apmClass.CallStatic<bool>("start");
                 }
-
-                AndroidJavaClass unityPlayer = new AndroidJavaClass(
-                    "com.unity3d.player.UnityPlayer"
-                );
-                AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>(
-                    "currentActivity"
-                );
-                AndroidJavaObject applicationContext = currentActivity.Call<AndroidJavaObject>(
-                    "getApplicationContext"
-                );
-                optionsBuilder = optionsBuilder.Call<AndroidJavaObject>(
-                    "setApplication",
-                    applicationContext
-                );
-
-                AndroidJavaObject androidOptions = optionsBuilder.Call<AndroidJavaObject>("build");
-
-                apmClass.CallStatic("preStart", androidOptions);
-                apmClass.CallStatic<bool>("start");
             }
             catch
             {

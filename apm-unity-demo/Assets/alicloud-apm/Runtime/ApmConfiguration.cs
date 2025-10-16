@@ -1,5 +1,8 @@
 #nullable enable
 
+using System;
+using System.Threading;
+
 namespace Alicloud.Apm
 {
     /// <summary>
@@ -23,29 +26,24 @@ namespace Alicloud.Apm
 
         private static ApmLoggerLevel _loggerLevel = ApmLoggerLevel.Notice;
 
-        internal static IPlatformApmConfiguration PlatformApmConfiguration
+        internal static IPlatformApmConfiguration PlatformApmConfiguration =>
+            _platformApmConfiguration.Value;
+
+        private static IPlatformApmConfiguration CreatePlatformApmConfiguration()
         {
-            get
-            {
-                if (_platformApmConfiguration != null)
-                {
-                    return _platformApmConfiguration;
-                }
-                lock (_apmConfigurationLock)
-                {
 #if UNITY_IOS && !UNITY_EDITOR
-                    return _platformApmConfiguration ??= new PlatformApmConfigurationIos();
+            return new PlatformApmConfigurationIos();
 #elif UNITY_ANDROID && !UNITY_EDITOR
-                    return _platformApmConfiguration ??= new PlatformApmConfigurationAndroid();
+            return new PlatformApmConfigurationAndroid();
 #else
-                    return _platformApmConfiguration ??= new PlatformApmConfigurationFallback();
+            return new PlatformApmConfigurationFallback();
 #endif
-                }
-            }
         }
 
-        private static IPlatformApmConfiguration? _platformApmConfiguration;
-        private static readonly object _apmConfigurationLock = new object();
+        private static readonly Lazy<IPlatformApmConfiguration> _platformApmConfiguration = new(
+            CreatePlatformApmConfiguration,
+            LazyThreadSafetyMode.ExecutionAndPublication
+        );
     }
 
     public enum ApmLoggerLevel : int
