@@ -8,14 +8,10 @@ namespace Alicloud.Apm.CrashAnalysis
     internal static class ExceptionHandler
     {
         private static bool _registered;
-        private static readonly object _registrationLock = new object();
-        private static readonly object _unhandledExceptionLock = new object();
+        private static readonly object _registrationLock = new();
 
         // Prevent log-driven re-entry into handlers
-        private static readonly ThreadLocal<int> _callbackReentrancyDepth = new ThreadLocal<int>(
-            () =>
-                0
-        );
+        private static readonly ThreadLocal<int> _callbackReentrancyDepth = new(() => 0);
 
         public static void Register()
         {
@@ -25,8 +21,6 @@ namespace Alicloud.Apm.CrashAnalysis
                 {
                     return;
                 }
-                _registered = true;
-                CrashAnalysisLogger.DebugLog("Registering CrashAnalysis exception handlers");
 
                 try
                 {
@@ -51,6 +45,7 @@ namespace Alicloud.Apm.CrashAnalysis
                     AppDomain.CurrentDomain.UnhandledException += OnUncaughtExceptionCallback;
                     TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
+                    _registered = true;
                     CrashAnalysisLogger.DebugLog(
                         "Successfully registered CrashAnalysis exception handlers"
                     );

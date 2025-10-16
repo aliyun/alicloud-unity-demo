@@ -10,9 +10,9 @@ namespace Alicloud.Apm
     ///
     public sealed class Apm
     {
-        private static IPlatformApm? _platformApm;
-        private static bool _started;
-        private static readonly object _apmLock = new object();
+        private static volatile IPlatformApm? _platformApm;
+        private static volatile bool _started;
+        private static readonly object _apmLock = new();
         private const int MaxCustomStringLength = 128;
 
         /// <summary>
@@ -160,6 +160,27 @@ namespace Alicloud.Apm
 
         private static void ValidateOptions(ApmOptions options)
         {
+            if (string.IsNullOrWhiteSpace(options.AppKey))
+            {
+                throw new ArgumentException(
+                    "AppKey cannot be null or empty.",
+                    nameof(options.AppKey)
+                );
+            }
+            if (string.IsNullOrWhiteSpace(options.AppSecret))
+            {
+                throw new ArgumentException(
+                    "AppSecret cannot be null or empty.",
+                    nameof(options.AppSecret)
+                );
+            }
+            if (string.IsNullOrWhiteSpace(options.AppRsaSecret))
+            {
+                throw new ArgumentException(
+                    "AppRsaSecret cannot be null or empty.",
+                    nameof(options.AppRsaSecret)
+                );
+            }
             options.UserNick = EnsureMaxLength("userNick", options.UserNick);
             options.UserId = EnsureMaxLength("userId", options.UserId);
         }
@@ -181,30 +202,38 @@ namespace Alicloud.Apm
         /// </summary>
         private static void InitializeRegisteredComponents()
         {
-            // 遍历所有启用的组件类型
+            var processedComponents = new HashSet<SDKComponents>();
+
             foreach (SDKComponents component in Enum.GetValues(typeof(SDKComponents)))
             {
+                if (!processedComponents.Add(component))
+                {
+                    continue;
+                }
                 if (component == SDKComponents.None)
                 {
                     continue;
                 }
-
-                // 检查该组件是否在配置中启用
-                if ((Options.SdkComponents & component) != 0)
+                if (!HasSingleFlag(component))
                 {
-                    // 尝试通过组件注册表初始化
-                    if (ApmComponentRegistry.IsComponentRegistered(component))
-                    {
-                        ApmComponentRegistry.InitializeComponent(component);
-                    }
-                    else
-                    {
-                        ApmLogger.Info(
-                            $"Component {component} not registered in component registry"
-                        );
-                    }
+                    continue;
+                }
+                if ((Options.SdkComponents & component) == 0)
+                {
+                    continue;
+                }
+
+                if (!ApmComponentRegistry.InitializeComponent(component))
+                {
+                    ApmLogger.Warning($"Component {component} failed to initialize");
                 }
             }
+        }
+
+        private static bool HasSingleFlag(SDKComponents component)
+        {
+            var value = (int)component;
+            return value != 0 && (value & (value - 1)) == 0;
         }
 
         private static bool TryGetPlatform(out IPlatformApm platform)

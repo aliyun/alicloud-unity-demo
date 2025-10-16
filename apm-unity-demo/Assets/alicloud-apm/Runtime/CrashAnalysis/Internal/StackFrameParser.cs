@@ -28,7 +28,12 @@ namespace Alicloud.Apm.CrashAnalysis
         // Mono's hardcoded unknown file string (never localized)
         private static readonly string MonoFilenameUnknownString = "<filename unknown>";
 
-        private static readonly string[] StringDelimiters = new string[] { Environment.NewLine };
+        private static readonly string[] StringDelimiters = new string[]
+        {
+            "\r\n", // Windows stack traces commonly use CRLF
+            "\n", // Unity frequently emits LF-only traces across platforms
+            "\r", // Handle any stray CR-only separators gracefully
+        };
 
 #if UNITY_IOS && !UNITY_EDITOR
         /// <summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.LowLevel;
 
@@ -8,16 +9,20 @@ namespace Alicloud.Apm
 {
     internal class MainThreadDispatchBehaviour
     {
-        private const int QueueCapacity = 1024;
+        private const int QueueCapacity = 4096;
 
-        private static readonly BlockingCollection<Action> _executionQueue =
-            new BlockingCollection<Action>(QueueCapacity);
+        private static readonly BlockingCollection<Action> _executionQueue = new(QueueCapacity);
+        private static int _droppedActionCount;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void InitializeLoop()
         {
             var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
-            var newSystem = new PlayerLoopSystem { updateDelegate = OnUpdate };
+            var newSystem = new PlayerLoopSystem
+            {
+                type = typeof(MainThreadDispatchBehaviour),
+                updateDelegate = OnUpdate,
+            };
 
             var systems = new List<PlayerLoopSystem>(playerLoop.subSystemList);
             systems.Insert(0, newSystem);
@@ -40,9 +45,19 @@ namespace Alicloud.Apm
             }
         }
 
-        public static void Enqueue(Action action)
+        public static bool Enqueue(Action action)
         {
-            _executionQueue.Add(action);
+            if (_executionQueue.TryAdd(action))
+            {
+                return true;
+            }
+
+            var dropped = Interlocked.Increment(ref _droppedActionCount);
+            ApmLogger.Warning(
+                $"Main thread dispatch queue overflowed; dropping action. Total dropped: {dropped}."
+            );
+
+            return false;
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Alicloud.Apm
 {
     internal static class ApmVersionInfo
     {
-        internal const string Version = "1.0.0";
+        internal const string Version = "1.0.1";
     }
 }

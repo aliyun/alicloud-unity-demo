@@ -1,12 +1,13 @@
 #nullable enable
 
 using System;
+using System.Threading;
 
 namespace Alicloud.Apm.CrashAnalysis
 {
     public static class CrashAnalysis
     {
-        private static readonly object _recordExceptionLock = new object();
+        private static readonly object _recordExceptionLock = new();
 
         public static void Log(string message)
         {
@@ -124,20 +125,23 @@ namespace Alicloud.Apm.CrashAnalysis
             }
         }
 
-        internal static IPlatformCrashAnalysis PlatformCrashAnalysis
+        internal static IPlatformCrashAnalysis PlatformCrashAnalysis =>
+            _platformCrashAnalysis.Value;
+
+        private static IPlatformCrashAnalysis CreatePlatformCrashAnalysis()
         {
-            get
-            {
 #if UNITY_IOS && !UNITY_EDITOR
-                return _platformCrashAnalysis ??= new PlatformCrashAnalysisIos();
+            return new PlatformCrashAnalysisIos();
 #elif UNITY_ANDROID && !UNITY_EDITOR
-                return _platformCrashAnalysis ??= new PlatformCrashAnalysisAndroid();
+            return new PlatformCrashAnalysisAndroid();
 #else
-                return _platformCrashAnalysis ??= new PlatformCrashAnalysisFallback();
+            return new PlatformCrashAnalysisFallback();
 #endif
-            }
         }
 
-        private static IPlatformCrashAnalysis? _platformCrashAnalysis;
+        private static readonly Lazy<IPlatformCrashAnalysis> _platformCrashAnalysis = new(
+            CreatePlatformCrashAnalysis,
+            LazyThreadSafetyMode.ExecutionAndPublication
+        );
     }
 }

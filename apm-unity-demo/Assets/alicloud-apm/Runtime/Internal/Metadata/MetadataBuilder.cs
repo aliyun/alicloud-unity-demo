@@ -14,7 +14,7 @@ namespace Alicloud.Apm
         {
             try
             {
-                Metadata metadata = new Metadata();
+                Metadata metadata = new();
                 return JsonUtility.ToJson(metadata);
             }
             catch (Exception e)

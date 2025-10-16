@@ -16,35 +16,56 @@ namespace Alicloud.Apm
         {
             try
             {
-                AndroidJavaClass apmClass = new AndroidJavaClass(PlatformApmAndroid.APM);
-                AndroidJavaClass loggerLevelClass = new AndroidJavaClass(
-                    "com.aliyun.emas.apm.logger.LoggerLevel"
-                );
-
-                AndroidJavaObject apmLoggerLevel = null;
-                if (loggerLevel == ApmLoggerLevel.Error)
+                using (AndroidJavaClass apmClass = new AndroidJavaClass(PlatformApmAndroid.APM))
                 {
-                    apmLoggerLevel = loggerLevelClass.GetStatic<AndroidJavaObject>("ERROR");
+                    using (
+                        AndroidJavaClass loggerLevelClass = new AndroidJavaClass(
+                            "com.aliyun.emas.apm.logger.LoggerLevel"
+                        )
+                    )
+                    {
+                        using (
+                            AndroidJavaObject apmLoggerLevel = GetAndroidLoggerLevel(
+                                loggerLevelClass,
+                                loggerLevel
+                            )
+                        )
+                        {
+                            apmClass.CallStatic("setLoggerLevel", apmLoggerLevel);
+                        }
+                    }
                 }
-                else if (loggerLevel == ApmLoggerLevel.Info || loggerLevel == ApmLoggerLevel.Notice)
-                {
-                    apmLoggerLevel = loggerLevelClass.GetStatic<AndroidJavaObject>("INFO");
-                }
-                else if (loggerLevel == ApmLoggerLevel.Warning)
-                {
-                    apmLoggerLevel = loggerLevelClass.GetStatic<AndroidJavaObject>("WARN");
-                }
-                else
-                {
-                    apmLoggerLevel = loggerLevelClass.GetStatic<AndroidJavaObject>("DEBUG");
-                }
-
-                apmClass.CallStatic("setLoggerLevel", apmLoggerLevel);
             }
             catch
             {
                 ApmLogger.Error($"Failed to set logger level: {loggerLevel.ToString()}");
             }
+        }
+
+        private static AndroidJavaObject GetAndroidLoggerLevel(
+            AndroidJavaClass loggerLevelClass,
+            ApmLoggerLevel loggerLevel
+        )
+        {
+            string fieldName;
+            if (loggerLevel == ApmLoggerLevel.Error)
+            {
+                fieldName = "ERROR";
+            }
+            else if (loggerLevel == ApmLoggerLevel.Info || loggerLevel == ApmLoggerLevel.Notice)
+            {
+                fieldName = "INFO";
+            }
+            else if (loggerLevel == ApmLoggerLevel.Warning)
+            {
+                fieldName = "WARN";
+            }
+            else
+            {
+                fieldName = "DEBUG";
+            }
+
+            return loggerLevelClass.GetStatic<AndroidJavaObject>(fieldName);
         }
     }
 #endif
