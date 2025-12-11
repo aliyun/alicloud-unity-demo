@@ -66,6 +66,8 @@ public class ClickHandler : MonoBehaviour {
 #endif
 
 #if UNITY_ANDROID
+        // 请求Android通知权限（Android 13+需要）
+        RequestNotificationPermission();
         // 创建通知渠道（Android 8.0+）
         PushHelper.CreateNotificationChannel(
             id: "8.0up",
@@ -218,6 +220,49 @@ public class ClickHandler : MonoBehaviour {
         Debug.Log(formattedLog);
         allLog = allLog + '\n' + formattedLog;
     }
+
+#if UNITY_ANDROID
+    private void RequestNotificationPermission() {
+        // 检查Android版本，只有Android 13 (API 33) 及以上需要动态请求通知权限
+        using (var version = new AndroidJavaClass("android.os.Build$VERSION")) {
+            int sdkInt = version.GetStatic<int>("SDK_INT");
+            
+            if (sdkInt >= 33) { // Android 13+
+                // 检查是否已有权限
+                if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS")) {
+                    Log("Requesting notification permission for Android 13+");
+                    
+                    // 请求权限
+                    UnityEngine.Android.Permission.RequestUserPermission("android.permission.POST_NOTIFICATIONS");
+                    
+                    // 启动协程检查权限结果
+                    StartCoroutine(CheckPermissionResult());
+                } else {
+                    Log("Notification permission already granted");
+                }
+            } else {
+                Log("Android version < 13, notification permission not required");
+            }
+        }
+    }
+    
+    private IEnumerator CheckPermissionResult() {
+        // 等待用户响应权限请求
+        yield return new WaitForSeconds(1f);
+        
+        // 检查权限结果
+        bool hasPermission = UnityEngine.Android.Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS");
+        
+        if (hasPermission) {
+            Log("Notification permission granted by user");
+        } else {
+            Log("Notification permission denied by user");
+            
+            // 可以引导用户去设置中手动开启
+            Log("You can manually enable notifications in Settings");
+        }
+    }
+#endif
     
     // 输入对话框相关方法
     public void ShowInputDialogForAccount() {
