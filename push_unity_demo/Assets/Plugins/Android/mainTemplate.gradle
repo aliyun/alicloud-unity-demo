@@ -1,0 +1,64 @@
+apply plugin: 'com.android.library'
+apply from: '../shared/keepUnitySymbols.gradle'
+apply from: '../shared/common.gradle'
+**APPLY_PLUGINS**
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api 'com.aliyun.ams:alicloud-android-push:3.10.1' 
+    //辅助通道
+    api 'com.aliyun.ams:alicloud-android-third-push:3.10.1'
+    //华为依赖
+    api 'com.aliyun.ams:alicloud-android-third-push-huawei:3.10.1'
+    //小米国内通道依赖
+    api 'com.aliyun.ams:alicloud-android-third-push-xiaomi:3.10.1'
+    //OPPO依赖
+    api 'com.aliyun.ams:alicloud-android-third-push-oppo:3.10.1'
+    //vivo依赖
+    api 'com.aliyun.ams:alicloud-android-third-push-vivo:3.10.1'
+    //魅族依赖
+    api 'com.aliyun.ams:alicloud-android-third-push-meizu:3.10.1'
+    //谷歌依赖
+    api 'com.aliyun.ams:alicloud-android-third-push-fcm:3.10.1'
+    //荣耀依赖
+    api 'com.aliyun.ams:alicloud-android-third-push-honor:3.10.1'
+**DEPS**}
+
+android {
+    namespace "com.unity3d.player"
+    ndkPath "**NDKPATH**"
+    ndkVersion "**NDKVERSION**"
+
+    compileSdk **APIVERSION**
+    buildToolsVersion = "**BUILDTOOLS**"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdk **MINSDK**
+        targetSdk **TARGETSDK**
+        ndk {
+            abiFilters **ABIFILTERS**
+            debugSymbolLevel **DEBUGSYMBOLLEVEL**
+        }
+        versionCode **VERSIONCODE**
+        versionName '**VERSIONNAME**'
+        consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
+**DEFAULT_CONFIG_SETUP**
+    }
+
+    lint {
+        abortOnError false
+    }
+
+    androidResources {
+        noCompress = **BUILTIN_NOCOMPRESS** + unityStreamingAssets.tokenize(', ')
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }**PACKAGING**
+}
+**IL_CPP_BUILD_SETUP**
+**SOURCE_BUILD_SETUP**
+**EXTERNAL_SOURCES**
