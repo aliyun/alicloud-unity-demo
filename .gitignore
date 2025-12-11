@@ -111,9 +111,9 @@ sysinfo.txt
 httpdns_unity_demo/[Pp]ackages/
 !httpdns_unity_demo/[Pp]ackages/manifest.json
 !httpdns_unity_demo/[Pp]ackages/packages-lock.json
-*/[Pp]ackages/
-!*/[Pp]ackages/manifest.json
-!*/[Pp]ackages/packages-lock.json
+# */[Pp]ackages/
+# !*/[Pp]ackages/manifest.json
+# !*/[Pp]ackages/packages-lock.json
 
 # Crashlytics generated file
 crashlytics-build.properties
