@@ -101,26 +101,26 @@ iOS平台使用CocoaPods管理依赖，需要注意以下配置：
     <meta-data android:name="com.hihonor.push.app_id" android:value="您的荣耀AppId" />
 
     <!-- 小米通道的参数 -->
-    <meta-data android:name="com.aliyun.ams.push.xiaomi.id" android:value="您的小米AppId" />
-    <meta-data android:name="com.aliyun.ams.push.xiaomi.key" android:value="您的小米AppKey" />
+    <meta-data android:name="com.aliyun.ams.push.xiaomi.id" android:value="id=您的小米AppId" />
+    <meta-data android:name="com.aliyun.ams.push.xiaomi.key" android:value="id=您的小米AppKey" />
 
     <!-- oppo通道的参数 -->
-    <meta-data android:name="com.aliyun.ams.push.oppo.key" android:value="您的OPPO AppKey" />
-    <meta-data android:name="com.aliyun.ams.push.oppo.secret" android:value="您的OPPO AppSecret" />
+    <meta-data android:name="com.aliyun.ams.push.oppo.key" android:value="id=您的OPPO AppKey" />
+    <meta-data android:name="com.aliyun.ams.push.oppo.secret" android:value="id=您的OPPO AppSecret" />
 
     <!-- vivo通道的参数api_key为appkey -->
     <meta-data android:name="com.vivo.push.api_key" android:value="您的vivo AppKey" />
     <meta-data android:name="com.vivo.push.app_id" android:value="您的vivo AppId" />
 
     <!-- 魅族通道的参数 -->
-    <meta-data android:name="com.aliyun.ams.push.meizu.id" android:value="您的魅族AppId" />
-    <meta-data android:name="com.aliyun.ams.push.meizu.secret" android:value="您的魅族AppKey" />
+    <meta-data android:name="com.aliyun.ams.push.meizu.id" android:value="id=您的魅族AppId" />
+    <meta-data android:name="com.aliyun.ams.push.meizu.secret" android:value="id=您的魅族AppKey" />
 
     <!-- fcm通道的参数 -->
-    <meta-data android:name="com.aliyun.ams.push.gcm.sendid" android:value="您的fcm project_number" />
-    <meta-data android:name="com.aliyun.ams.push.gcm.applicationid" android:value="您的fcm mobilesdk_app_id" />
-    <meta-data android:name="com.aliyun.ams.push.gcm.projectid" android:value="您的fcm project_id"/>
-    <meta-data android:name="com.aliyun.ams.push.gcm.apiKey" android:value="您的fcm current_key"/>
+    <meta-data android:name="com.aliyun.ams.push.gcm.sendid" android:value="id=您的fcm project_number" />
+    <meta-data android:name="com.aliyun.ams.push.gcm.applicationid" android:value="id=您的fcm mobilesdk_app_id" />
+    <meta-data android:name="com.aliyun.ams.push.gcm.projectid" android:value="id=您的fcm project_id"/>
+    <meta-data android:name="com.aliyun.ams.push.gcm.apiKey" android:value="id=您的fcm current_key"/>
 </application>
 ```
 

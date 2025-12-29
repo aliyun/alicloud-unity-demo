@@ -113,7 +113,6 @@ public class PushWrapper implements Constant {
 		if (metaData != null && metaData.containsKey(MEIZU_ID)
 			&& metaData.containsKey(MEIZU_SECRET)) {
 			// 魅族通道
-			LOGGER.d("push registerThirdPush MEIZUID:" + Utils.getPushData(metaData, MEIZU_ID) + "MEIZUSECRET" + Utils.getPushData(metaData, MEIZU_SECRET));
 			MeizuRegister.register(
 				mContext,
 				Utils.getPushData(metaData, MEIZU_ID),
